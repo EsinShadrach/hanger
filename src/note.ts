@@ -1,4 +1,6 @@
 import Elysia, { error, t } from "elysia";
+import { db } from "./db";
+import { InsertUser, usersTable } from "./db/schema";
 
 class Note {
   constructor(public data: string[] = ["Moonhalo"]) {}
@@ -24,6 +26,10 @@ class Note {
   }
 }
 
+export async function createUser(data: InsertUser) {
+  await db.insert(usersTable).values(data);
+}
+
 export const notes = new Elysia({ prefix: "/notes" })
   .decorate("notes", new Note())
   .onTransform(function log({ body, params, path, request: { method } }) {
@@ -35,8 +41,15 @@ export const notes = new Elysia({ prefix: "/notes" })
   .get("/", ({ notes }) => notes.getAll())
   .get(
     "/:id",
-    ({ notes, params: { id } }) =>
-      notes.get(id) ?? error(404, "Seems like this note doesn't exist"),
+    async ({ notes, params: { id } }) => {
+      await createUser({
+        email: "rafeesin@gmail.com",
+        password: await Bun.password.hash("applesAreRed"),
+        name: "Rafe Esin",
+      });
+
+      return notes.get(id) ?? error(404, "Seems like this note doesn't exist");
+    },
     {
       params: t.Object({ id: t.Number() }),
     }
