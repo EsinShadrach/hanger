@@ -10,6 +10,7 @@ axum = "0.8.1"
 tokio = { version = "1", features = ["full"] }
 serde = { features = ["derive"], version = "1.0" }
 serde_json = "1.0.137"
-
-sqlx = { version = "0.8.3", features = ["runtime-tokio-rustls", "macros"] }
 dotenv = "0.15.0"
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+libsql = "0.6.0"
